@@ -1,0 +1,68 @@
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.container{
+    width: 50%;
+    text-align: center;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+}
+
+.expression-field{
+    width: 100%;
+    min-height: 38px;
+    border: 1px solid #C5C5C5;
+    box-sizing: border-box;
+    border-radius: 10px;
+    display: flex;
+    row-gap: 3px;
+    align-items: center;
+    justify-content: left;
+    text-align: left;
+    padding: 3px 5px;
+    flex-wrap: wrap;
+    cursor: text;
+}
+
+.expression-field .field{
+    
+    padding: 1px 7px;
+    background-color: #E5E8FF;
+    margin: 0px 5px;
+    display: flex;
+    line-height: 1.4;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 500;
+    justify-content: center;
+    border-radius: 8px;
+   
+}
+.expression-field .operator{
+    font-size: 17px;
+    font-weight: 600;
+    padding: 0px 5px;
+}
+
+.expression-field .number{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.caret{
+    display: inline-block;
+    width: 1px;
+    background-color: black;
+    height: 20px;
+}
+
+
+
+.tippy-content {
+    padding: 5px !important;
+}

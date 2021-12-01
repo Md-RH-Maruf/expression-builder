@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import ExpressionField from './components/expression-field/ExpressionField.jsx';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ExpressionField />
   </React.StrictMode>,
   document.getElementById('root')
 );

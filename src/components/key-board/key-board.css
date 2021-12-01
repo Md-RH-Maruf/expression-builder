@@ -1,0 +1,90 @@
+.board{
+    width: 310px;
+    height: 225px;
+    padding: 2px;
+    border-radius: 5px;
+    display: flex;
+}
+
+.board .left-slider{
+    width: 40%;
+    height: 100%;
+    background: #F8F8F8;
+    border-radius: 8px;
+    color: #6A6A6A;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    margin-right: 5px;
+}
+
+.board .key-container{
+    width: 60%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+}
+.left-slider h4{
+    font-weight: 500;
+}
+.left-slider .field{
+    font-weight: 400;
+    font-size: 12px !important;
+    border-radius: 8px;
+    padding: 5px;
+    cursor: pointer;
+}
+.field:hover{
+    background-color: #E5E5E5;
+}
+
+.custom-button{
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    border: none;
+    background-color: white;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 17px;
+}
+
+.custom-button:hover{
+    background-color: #F8F8F8;
+}
+.custom-button.empty:hover{
+    background-color: white;
+    cursor: default;
+}
+
+.cross-button{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #F4F4F4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    right: -5px;
+    top: -5px;
+}
+
+.cross-button img{
+    width: 10px;
+    height: 10px;
+}
+
+/* .tippy-box{
+    font-size: 12px !important;
+} */
+
+
