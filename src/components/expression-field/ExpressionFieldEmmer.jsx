@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useImmer } from "use-immer";
 import './expression-field.css';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import KeyBoard from "../key-board/KeyBoard";
+import KeyBoard from "../key-board/KeyBoardEmmer";
 import 'tippy.js/themes/light.css';
 import back from '../../assets/images/back.svg';
+
 const ExpressionField = () => {
 
     const fieldList = ['User Name', 'First Name', 'Last Name', 'Price', 'Quantity'];
@@ -28,9 +30,9 @@ const ExpressionField = () => {
     { type: 'number', content: '.' },
     { type: 'operator', content: '-' }];
 
-    const [expressions, setExpressions] = useState([]);
+    const [expressions, setExpressions] = useImmer([]);
     const [isExpFocused, setIsExpFocused] = useState(false);
-    const [caretPosition, setCaretPosition] = useState(0);
+    const [caretPosition, setCaretPosition] = useImmer(0);
 
     const expRef = useRef(null);
 
@@ -59,38 +61,43 @@ const ExpressionField = () => {
         event.preventDefault()
         if (isExpFocused) {
             if (key === 'ArrowLeft' && caretPosition > 0) {
-                const tempExp = [...expressions];
+                //const tempExp = [...expressions];
                 const newCaretPos = caretPosition - 1;
-                [tempExp[newCaretPos], tempExp[newCaretPos + 1]] = [tempExp[newCaretPos + 1], tempExp[newCaretPos]];
-                setCaretPosition(newCaretPos);
-                setExpressions(oldState =>tempExp);
+                setCaretPosition(oldPosition => oldPosition = newCaretPos);
+                setExpressions(oldExp =>{
+                    //const tempExp = oldExp;
+                    [oldExp[newCaretPos], oldExp[newCaretPos + 1]] = [oldExp[newCaretPos + 1], oldExp[newCaretPos]];
+                });
             } else if (key === 'ArrowRight' && caretPosition < expressions.length - 1) {
-                const tempExp = [...expressions];
+                //const tempExp = [...expressions];
                 const newCaretPos = caretPosition + 1;
-                [tempExp[newCaretPos - 1], tempExp[newCaretPos]] = [tempExp[newCaretPos], tempExp[newCaretPos - 1]];
-                setCaretPosition(newCaretPos);
-                setExpressions(oldState =>tempExp);
+                
+                setCaretPosition(oldPosition => oldPosition =newCaretPos);
+                setExpressions(oldExp =>{
+                    [oldExp[newCaretPos - 1], oldExp[newCaretPos]] = [oldExp[newCaretPos], oldExp[newCaretPos - 1]];
+                });
             }
 
             if (key === 'Backspace') {
                 if (caretPosition > 0) {
-                    setExpressions(oldState => [...oldState.slice(0, caretPosition - 1), ...oldState.slice(caretPosition)])
-                    setCaretPosition(prevPosition => prevPosition - 1);
+                    //setExpressions(oldState => [...oldState.slice(0, caretPosition - 1), ...oldState.slice(caretPosition)])
+                    setExpressions(oldState => oldState = oldState.slice(0, caretPosition - 1).concat(oldState.slice(caretPosition)));
+                    setCaretPosition(oldPosition => oldPosition = oldPosition- 1);
                 }
             } else if ((!isNaN(key)) || key === '.') {
                 setExpressions(oldState => {
-                    const tempExp = [...oldState];
-                    tempExp.splice(caretPosition, 0, { type: 'number', content: key });
-                    return tempExp
+                    //const tempExp = [...oldState];
+                    oldState.splice(caretPosition, 0, { type: 'number', content: key });
+                    //return oldState;
                 });
-                setCaretPosition(prevPosition => prevPosition + 1);
+                setCaretPosition(oldPosition => oldPosition = oldPosition + 1);
             } else if (['+', '-', '*', '/', '(', ')'].indexOf(key) !== -1) {
                 setExpressions(oldState => {
-                    const tmpExp = [...oldState]
-                    tmpExp.splice(caretPosition, 0, { type: 'operator', content: key });
-                    return tmpExp;
+                    //const tmpExp = [...oldState]
+                    oldState.splice(caretPosition, 0, { type: 'operator', content: key });
+                    //return oldState;
                 });
-                setCaretPosition(prevPosition => prevPosition + 1);
+                setCaretPosition(oldPosition => oldPosition = oldPosition + 1);
             }
         }
     }
@@ -115,7 +122,7 @@ const ExpressionField = () => {
                     }
                 }
                 if (i === expFieldChild.length) {
-                    moveCaret(i - 1, 'straight');
+                    moveCaret(i, 'straight');
                 }
             }
         } else {
@@ -145,40 +152,54 @@ const ExpressionField = () => {
     function moveCaret(newPosition, side = 'before') {
         if (side === 'straight') {
             if (caretPosition !== newPosition) {
-                const tempExp = [...expressions];
-    
-                tempExp.splice(caretPosition, 1);
                 
-                if (tempExp.length < newPosition) newPosition = tempExp.length;
-                
-                console.log(side,newPosition,caretPosition);
-                tempExp.splice(newPosition, 0, {type: 'caret', content: '' });
-                setExpressions(tempExp);
-                setCaretPosition(oldState => newPosition);
+
+                setExpressions(oldExpression =>{
+                    console.log('1st ',side,newPosition,caretPosition);
+                    if(newPosition === oldExpression.length){
+                        oldExpression.splice(caretPosition, 1);
+                        newPosition = oldExpression.length;
+                    }else if(caretPosition < newPosition){
+                        newPosition--;
+                        oldExpression.splice(caretPosition, 1);
+                    }else{
+                        oldExpression.splice(caretPosition, 1);
+                    }
+
+                    oldExpression.splice(newPosition, 0, {type: 'caret', content: '' });
+                    console.log('2nd ',side,newPosition,caretPosition);
+                })
+                setCaretPosition(oldPosition => oldPosition = newPosition);
                
             }
         } else if (side === 'before' && caretPosition !== newPosition - 1) {
-            const tmp = [...expressions]
-            tmp.splice(caretPosition,1);
+            //const tmp = [...expressions]
+            //tmp.splice(caretPosition,1);
+            //if(caretPosition < newPosition) newPosition--;
+            ///console.log(side,newPosition,caretPosition);
+            //tmp.splice(newPosition, 0, {type: 'caret', content: '' });
+            //console.log('before tmp ', tmp)
             if(caretPosition < newPosition) newPosition--;
-            console.log(side,newPosition,caretPosition);
-            tmp.splice(newPosition, 0, {type: 'caret', content: '' });
-            console.log('before tmp ', tmp)
-            setExpressions(tmp);
-            setCaretPosition(oldState =>{
-                console.log('old positiion',oldState,'new position',newPosition);
-                return newPosition;  
-            } );
+            setExpressions(oldExpression =>{
+                oldExpression.splice(caretPosition,1);
+                oldExpression.splice(newPosition, 0, {type: 'caret', content: '' });
+                console.log(side,newPosition,caretPosition,oldExpression);
+            });
+            setCaretPosition(oldPosition => oldPosition = newPosition);
         } else if (side === 'after' && caretPosition !== newPosition + 1) {
             newPosition++;
-            const tempExp = [...expressions];
-            tempExp.splice(caretPosition,1);
+            //const tempExp = [...expressions];
+            //tempExp.splice(caretPosition,1);
             if(caretPosition < newPosition) --newPosition;
-            tempExp.splice(newPosition, 0, {type: 'caret', content: '' });
-            console.log(side,newPosition,caretPosition);
-            console.log('modified array=',tempExp);
-            setExpressions(tempExp);
-            setCaretPosition(oldState => newPosition);
+            //tempExp.splice(newPosition, 0, {type: 'caret', content: '' });
+            //console.log(side,newPosition,caretPosition);
+            //console.log('modified array=',tempExp);
+            setExpressions(oldExpression =>{
+                oldExpression.splice(caretPosition,1);
+                oldExpression.splice(newPosition, 0, {type: 'caret', content: '' });
+                console.log(side,newPosition,caretPosition,oldExpression);
+            });
+            setCaretPosition(oldPosition => oldPosition = newPosition);
         }
     }
     return (<Tippy
@@ -199,7 +220,7 @@ const ExpressionField = () => {
         <div className='container'>
             <div className='expression-field' ref={expRef} onClick={expressionFieldClickAction} onKeyDown={keyPressAction} tabIndex={0}>
                 {
-                    expressions.map((expElemnet, index) => <span key={expElemnet.id} className={expElemnet.type}>{expElemnet.content}</span>)
+                    expressions.map((expElemnet, index) => <span key={index} className={expElemnet.type}>{expElemnet.content}</span>)
                 }
             </div>
 

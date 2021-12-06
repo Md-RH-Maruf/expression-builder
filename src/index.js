@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import ExpressionField from './components/expression-field/ExpressionField.jsx';
+import ExpressionField from './components/expression-field/ExpressionFieldEmmer';
 
 ReactDOM.render(
   <React.StrictMode>

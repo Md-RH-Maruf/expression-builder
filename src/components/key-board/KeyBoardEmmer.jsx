@@ -8,14 +8,14 @@ function KeyBoard({ caretPosition, setCaretPosition, expRef, fieldList, keyList,
     const clickAction = (type, content) => {
         if (type === 'back') {
             if (caretPosition > 0) {
-                setExpressions(oldState => [...oldState.slice(0, caretPosition - 1), ...oldState.slice(caretPosition)])
-                setCaretPosition(prevPosition => prevPosition - 1);
+                setExpressions(oldExpression => oldExpression = oldExpression.slice(0, caretPosition - 1).concat(oldExpression.slice(caretPosition)));
+                setCaretPosition(oldPosition => oldPosition = oldPosition - 1);
             }
             //setExpressions(oldState => [...oldState.slice(0, -1)])
         } else {
-            setExpressions(oldState => [...oldState.slice(0, caretPosition), { type, content }, ...oldState.slice(caretPosition)])
+            setExpressions(oldExpression => oldExpression = oldExpression.slice(0, caretPosition).concat([{ type, content }], oldExpression.slice(caretPosition)));
             //setMaxNum(prevNum => prevNum+1);
-            setCaretPosition(prevPosition => prevPosition + 1);
+            setCaretPosition(oldPosition => oldPosition = oldPosition + 1);
         }
         expRef.current.focus();
 
