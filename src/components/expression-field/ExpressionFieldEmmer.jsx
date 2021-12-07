@@ -11,24 +11,24 @@ const ExpressionField = () => {
 
     const fieldList = ['User Name', 'First Name', 'Last Name', 'Price', 'Quantity'];
     const keyList = [{ type: 'back', content: <img src={back} alt='' /> },
-    { type: 'operator', content: '(' },
-    { type: 'operator', content: ')' },
-    { type: 'empty', content: '' },
-    { type: 'number', content: '7' },
-    { type: 'number', content: '8' },
-    { type: 'number', content: '9' },
-    { type: 'operator', content: '/' },
-    { type: 'number', content: '4' },
-    { type: 'number', content: '5' },
-    { type: 'number', content: '6' },
-    { type: 'operator', content: '*' },
-    { type: 'number', content: '1' },
-    { type: 'number', content: '2' },
-    { type: 'number', content: '3' },
-    { type: 'operator', content: '+' },
-    { type: 'number', content: '0' },
-    { type: 'number', content: '.' },
-    { type: 'operator', content: '-' }];
+    { id:6,type: 'operator', content: '(' },
+    { id:7,type: 'operator', content: ')' },
+    { id:8,type: 'empty', content: '' },
+    { id:9,type: 'number', content: '7' },
+    { id:10,type: 'number', content: '8' },
+    { id:11, type: 'number', content: '9' },
+    { id:12,type: 'operator', content: '/' },
+    { id:13,type: 'number', content: '4' },
+    { id:14,type: 'number', content: '5' },
+    { id:15,type: 'number', content: '6' },
+    { id:16,type: 'operator', content: '*' },
+    { id:17,type: 'number', content: '1' },
+    { id:18,type: 'number', content: '2' },
+    { id:19,type: 'number', content: '3' },
+    { id:20,type: 'operator', content: '+' },
+    { id:21,type: 'number', content: '0' },
+    { id:22,type: 'number', content: '.' },
+    { id:23,type: 'operator', content: '-' }];
 
     const [expressions, setExpressions] = useImmer([]);
     const [isExpFocused, setIsExpFocused] = useState(false);
@@ -40,8 +40,6 @@ const ExpressionField = () => {
     //     console.log('expressions=',expressions);
     //     // console.log(expressionBuilder(expressions));
     // }, [expressions]);
- 
-    
 
 
     const expressionBuilder = (expressions) => {
@@ -61,15 +59,15 @@ const ExpressionField = () => {
         event.preventDefault()
         if (isExpFocused) {
             if (key === 'ArrowLeft' && caretPosition > 0) {
-                //const tempExp = [...expressions];
+                
                 const newCaretPos = caretPosition - 1;
                 setCaretPosition(oldPosition => oldPosition = newCaretPos);
                 setExpressions(oldExp =>{
-                    //const tempExp = oldExp;
+                    
                     [oldExp[newCaretPos], oldExp[newCaretPos + 1]] = [oldExp[newCaretPos + 1], oldExp[newCaretPos]];
                 });
             } else if (key === 'ArrowRight' && caretPosition < expressions.length - 1) {
-                //const tempExp = [...expressions];
+               
                 const newCaretPos = caretPosition + 1;
                 
                 setCaretPosition(oldPosition => oldPosition =newCaretPos);
@@ -80,22 +78,17 @@ const ExpressionField = () => {
 
             if (key === 'Backspace') {
                 if (caretPosition > 0) {
-                    //setExpressions(oldState => [...oldState.slice(0, caretPosition - 1), ...oldState.slice(caretPosition)])
                     setExpressions(oldState => oldState = oldState.slice(0, caretPosition - 1).concat(oldState.slice(caretPosition)));
                     setCaretPosition(oldPosition => oldPosition = oldPosition- 1);
                 }
             } else if ((!isNaN(key)) || key === '.') {
                 setExpressions(oldState => {
-                    //const tempExp = [...oldState];
                     oldState.splice(caretPosition, 0, { type: 'number', content: key });
-                    //return oldState;
                 });
                 setCaretPosition(oldPosition => oldPosition = oldPosition + 1);
             } else if (['+', '-', '*', '/', '(', ')'].indexOf(key) !== -1) {
                 setExpressions(oldState => {
-                    //const tmpExp = [...oldState]
                     oldState.splice(caretPosition, 0, { type: 'operator', content: key });
-                    //return oldState;
                 });
                 setCaretPosition(oldPosition => oldPosition = oldPosition + 1);
             }
@@ -119,6 +112,16 @@ const ExpressionField = () => {
                     if (clickX < (rect.x)) {
                         moveCaret(i, 'straight');
                         break;
+                    }else{
+                        console.log(' ----- straight-----');
+                        if(expFieldChild[i+1]){
+                            const rectNext = expFieldChild[i+1].getBoundingClientRect();
+                            if(rectNext.y > rect.y+rect.height) {
+                                moveCaret(i+1, 'straight');
+                                break;
+                            }
+                        }
+                        
                     }
                 }
                 if (i === expFieldChild.length) {
@@ -144,7 +147,7 @@ const ExpressionField = () => {
             }
         }
         if (!isExpFocused) {
-            setExpressions(oldState => [...oldState, { type: 'caret', content: '' }]);
+            setExpressions(oldState => [...oldState, { id:0,type: 'caret', content: '' }]);
             setIsExpFocused(true);
         }
     }
@@ -153,50 +156,36 @@ const ExpressionField = () => {
         if (side === 'straight') {
             if (caretPosition !== newPosition) {
                 
-
-                setExpressions(oldExpression =>{
-                    console.log('1st ',side,newPosition,caretPosition);
-                    if(newPosition === oldExpression.length){
-                        oldExpression.splice(caretPosition, 1);
-                        newPosition = oldExpression.length;
-                    }else if(caretPosition < newPosition){
-                        newPosition--;
-                        oldExpression.splice(caretPosition, 1);
-                    }else{
-                        oldExpression.splice(caretPosition, 1);
-                    }
-
-                    oldExpression.splice(newPosition, 0, {type: 'caret', content: '' });
-                    console.log('2nd ',side,newPosition,caretPosition);
-                })
+                const temp = [...expressions];
+                if(newPosition === temp.length){
+                    temp.splice(caretPosition, 1);
+                    newPosition = temp.length;
+                }else if(caretPosition < newPosition){
+                    newPosition--;
+                    temp.splice(caretPosition, 1);
+                }else{
+                    temp.splice(caretPosition, 1);
+                }
+                temp.splice(newPosition, 0, {id:0,type: 'caret', content: '' });
+                setExpressions(oldExpression => oldExpression = temp);
                 setCaretPosition(oldPosition => oldPosition = newPosition);
                
             }
         } else if (side === 'before' && caretPosition !== newPosition - 1) {
-            //const tmp = [...expressions]
-            //tmp.splice(caretPosition,1);
-            //if(caretPosition < newPosition) newPosition--;
-            ///console.log(side,newPosition,caretPosition);
-            //tmp.splice(newPosition, 0, {type: 'caret', content: '' });
-            //console.log('before tmp ', tmp)
+            
             if(caretPosition < newPosition) newPosition--;
             setExpressions(oldExpression =>{
                 oldExpression.splice(caretPosition,1);
-                oldExpression.splice(newPosition, 0, {type: 'caret', content: '' });
+                oldExpression.splice(newPosition, 0, {id:0,type: 'caret', content: '' });
                 console.log(side,newPosition,caretPosition,oldExpression);
             });
             setCaretPosition(oldPosition => oldPosition = newPosition);
         } else if (side === 'after' && caretPosition !== newPosition + 1) {
             newPosition++;
-            //const tempExp = [...expressions];
-            //tempExp.splice(caretPosition,1);
             if(caretPosition < newPosition) --newPosition;
-            //tempExp.splice(newPosition, 0, {type: 'caret', content: '' });
-            //console.log(side,newPosition,caretPosition);
-            //console.log('modified array=',tempExp);
             setExpressions(oldExpression =>{
                 oldExpression.splice(caretPosition,1);
-                oldExpression.splice(newPosition, 0, {type: 'caret', content: '' });
+                oldExpression.splice(newPosition, 0, {id:0,type: 'caret', content: '' });
                 console.log(side,newPosition,caretPosition,oldExpression);
             });
             setCaretPosition(oldPosition => oldPosition = newPosition);

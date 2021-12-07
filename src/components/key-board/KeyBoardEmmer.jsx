@@ -3,18 +3,18 @@ import './key-board.css'
 import cross from '../../assets/images/cross.png';
 import { hideAll } from 'tippy.js';
 
-function KeyBoard({ caretPosition, setCaretPosition, expRef, fieldList, keyList, setExpressions}) {
+function KeyBoard({ caretPosition, setCaretPosition, expRef, fieldList, keyList, setExpressions }) {
 
-    const clickAction = (type, content) => {
+    const clickAction = (id,type, content) => {
         if (type === 'back') {
             if (caretPosition > 0) {
                 setExpressions(oldExpression => oldExpression = oldExpression.slice(0, caretPosition - 1).concat(oldExpression.slice(caretPosition)));
                 setCaretPosition(oldPosition => oldPosition = oldPosition - 1);
             }
-            //setExpressions(oldState => [...oldState.slice(0, -1)])
+           
         } else {
-            setExpressions(oldExpression => oldExpression = oldExpression.slice(0, caretPosition).concat([{ type, content }], oldExpression.slice(caretPosition)));
-            //setMaxNum(prevNum => prevNum+1);
+            setExpressions(oldExpression => oldExpression = oldExpression.slice(0, caretPosition).concat([{ id,type, content }], oldExpression.slice(caretPosition)));
+            
             setCaretPosition(oldPosition => oldPosition = oldPosition + 1);
         }
         expRef.current.focus();
@@ -27,10 +27,10 @@ function KeyBoard({ caretPosition, setCaretPosition, expRef, fieldList, keyList,
         <div className="board">
             <div className="left-slider">
                 <h4>Form Fields</h4>
-                {fieldList.map((item, index) => <div className="field" key={`field-${index}`} onClick={() => clickAction("field", item)}>{item}</div>)}
+                {fieldList.map((item, index) => <div className="field" key={`field-${index}`} onClick={() => clickAction(`${index+1}`,"field", item)}>{item}</div>)}
             </div>
             <div className="key-container">
-                {keyList.map((keyItem, index) => <div className={`custom-button ${keyItem.type}`} key={`button-${index}`} onClick={() => clickAction(keyItem.type, keyItem.content)}>
+                {keyList.map((keyItem, index) => <div className={`custom-button ${keyItem.type}`} key={`button-${index}`} onClick={() => clickAction(keyItem.id,keyItem.type, keyItem.content)}>
                     {keyItem.content}
                 </div>
                 )}
